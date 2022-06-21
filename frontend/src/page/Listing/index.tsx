@@ -6,7 +6,8 @@ import { MoviePage } from "types/movies";
 import { BASE_URL } from "ultis/request";
 
 function Listing() {
-
+    
+    const [pageNumber, setPageNumber] = useState(0);
     const [Page, setPage] = useState<MoviePage>({
         content: [],
         last: true,
@@ -19,24 +20,28 @@ function Listing() {
         empty: true
 
     })
-    const [PageNumber, setPageNumber] = useState(0);
-    useEffect(() => {
 
-        axios.get(`${BASE_URL}/movies?size12&page=${PageNumber}&sort=title`)
+    useEffect(() => {
+     
+        axios.get(`${BASE_URL}/movies?size=12&page=${pageNumber}`)
             .then(resposta => {
                 const data = resposta.data as MoviePage
+                console.log(data);
                 setPage(data);
             });
 
-    }, [setPageNumber])
+    }, [pageNumber])
 
+    const handlePageChange = (newNumber: number) => {
 
+        setPageNumber(newNumber);
+    }
 
     return (
 
         <>
 
-            <Pagination />
+            <Pagination page={Page}  onChange={handlePageChange} />
             <div className="container">
                 <div className="row">
                     {Page.content.map(movie => (
