@@ -7,56 +7,54 @@ import { BASE_URL } from "ultis/request";
 
 function Listing() {
 
+    const [Page, setPage] = useState<MoviePage>({
+        content: [],
+        last: true,
+        totalPages: 0,
+        totalElements: 0,
+        size: 12,
+        number: 0,
+        first: true,
+        numberOfElements: 0,
+        empty: true
 
+    })
     const [PageNumber, setPageNumber] = useState(0);
-useEffect(() =>{
+    useEffect(() => {
 
-    axios.get(`${BASE_URL}/movies?size12&page=1`)
-    .then(resposta => {
-        const data = resposta.data as MoviePage
-        setPageNumber(data.number);
-    });
+        axios.get(`${BASE_URL}/movies?size12&page=${PageNumber}&sort=title`)
+            .then(resposta => {
+                const data = resposta.data as MoviePage
+                setPage(data);
+            });
 
-},[])
+    }, [setPageNumber])
 
 
-   
+
     return (
-    
-                <>
-                    <p>{PageNumber}</p>
-                <Pagination />
-                <div className="container">
-                    <div className="row">
 
-                        <div className="col-sm-6 col-lg-4 col-lx-3 mb-3">
-                            <MovieCard />
-                        </div>
-                        <div className="col-sm-6 col-lg-4 col-lx-3 mb-3">
-                            <MovieCard />
-                        </div>
-                        <div className="col-sm-6 col-lg-4 col-lx-3 mb-3">
-                            <MovieCard />
-                        </div>
-                        <div className="col-sm-6 col-lg-4 col-lx-3 mb-3">
-                            <MovieCard />
-                        </div>
-                        <div className="col-sm-6 col-lg-4 col-lx-3 mb-3">
-                            <MovieCard />
-                        </div>
-                        <div className="col-sm-6 col-lg-4 col-lx-3 mb-3">
-                            <MovieCard />
-                        </div>
-                        <div className="col-sm-6 col-lg-4 col-lx-3 mb-3">
-                            <MovieCard />
+        <>
+
+            <Pagination />
+            <div className="container">
+                <div className="row">
+                    {Page.content.map(movie => (
+
+                        <div key={movie.id} className="col-sm-6 col-lg-4 col-lx-3 mb-3">
+                            <MovieCard movie={movie} />
                         </div>
 
-                    </div>
+                    ))}
+
+
+
                 </div>
+            </div>
 
-            </>
-            );
+        </>
+    );
 
 }
 
-            export default Listing
+export default Listing
